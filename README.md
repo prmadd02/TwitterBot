@@ -1,7 +1,7 @@
 # TwitterBot
 Pulls data from the Louisville Metro API and produces tweets using this data.
 
--VERSION 1.0
+-VERSION 1.0 (Will need twitter4j.properties file) That will be posted in slack
 
 Referenced Libraries needed
 
