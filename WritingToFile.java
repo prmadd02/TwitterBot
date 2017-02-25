@@ -11,6 +11,7 @@ public class WritingToFile {
 	
 	static String logSeparator = "/////////////////////////////////////////////////////";
 	
+	//Setting up logger
 	static Logger logger = Logger.getLogger("TwitterBotLog");  
     static FileHandler fh;
 	
@@ -18,11 +19,13 @@ public class WritingToFile {
 	{
 		try
 	    {
+			//initalize logger for info
 	    	fh = new FileHandler("TwitterBotInfo.log", true);
 	    	logger.addHandler(fh);
 	    	SimpleFormatter formatter = new SimpleFormatter();  
 	        fh.setFormatter(formatter);
 	        
+	        //Write to loginfo file
 	        logger.info(sor + System.lineSeparator() + msg + System.lineSeparator() + UserName + System.lineSeparator() + logSeparator);
 	    	
 	    }
@@ -37,11 +40,13 @@ public class WritingToFile {
 	{
 		try
 	    {
+			//initalize logger for errors
 	    	fh = new FileHandler("TwitterBotError.log", true);
 	    	logger.addHandler(fh);
 	    	SimpleFormatter formatter = new SimpleFormatter();  
 	        fh.setFormatter(formatter);
 	        
+	      //Write to logerror file
 	        logger.severe(msg + System.lineSeparator() + printStackTrace + System.lineSeparator() + logSeparator);
 	    	
 	    }
@@ -55,6 +60,7 @@ public class WritingToFile {
 	
 	public static String exceptionStacktraceToString(Exception e)
 	{
+		//puts stacktrace to string to see in log files
 	    ByteArrayOutputStream baos = new ByteArrayOutputStream();
 	    PrintStream ps = new PrintStream(baos);
 	    e.printStackTrace(ps);
@@ -62,7 +68,7 @@ public class WritingToFile {
 	    return baos.toString();
 	}
 	
-	public static void CSVFile (String fileName, String msg, String userName, String sor)
+	public static void CSVFile (String fileName, String msg, String userName, String sor, String cleanup)
 	{
 		//Get timestamp to put into file
 		String timeStamp = new SimpleDateFormat("M/dd/yyyy hh:mm:ss a").format(new java.util.Date());
@@ -83,6 +89,8 @@ public class WritingToFile {
 			sb.append(userName);
 			sb.append(',');
 			sb.append(msg);
+			sb.append(',');
+			sb.append(cleanup);
 			sb.append('\n');
 						
 			pw.write(sb.toString());
