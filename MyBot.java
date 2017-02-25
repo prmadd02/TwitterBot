@@ -2,6 +2,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Calendar;
+import java.text.SimpleDateFormat;
 
 import twitter4j.Query;
 import twitter4j.QueryResult;
@@ -23,11 +25,24 @@ public class MyBot{
     		
     		//access the twitter API using your twitter4j.properties file
     		Twitter twitter = TwitterFactory.getSingleton();
+		
+		//Create a WeatherData object which will access the OpenWeatherMap API
+		WeatherData louWeather = new WeatherData();
+		
+		//Create a Calendar object for keeping time
+		Calendar cal = Calendar.getInstance();
+		SimpleDateFormat sdf = new SimpleDateFormat("mm");
+		int min = 0;
     		    		 		
     		//keep tweeting forever or till exception happens
     		while (true)
     		{
-    			 		
+			//Retrieve number of minutes past the hour
+    			min = Integer.parseInt(sdf.format(cal.getTime()));
+			//Tweet a weather update every 30 minutes
+			if(min % 30 == 0){
+				SendTweet.Tweet(louWeather.getWeather());
+			}
     			//creating a new search
         		Query query = new Query("Kentucky #UKvsUF -RT");
         		
