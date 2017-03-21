@@ -20,8 +20,8 @@ public class MyBot{
     	try
     	{
     		//Finding twitter id so that query isn't returning the same results
-    		long lastID = 0;
-    		long firstID = 0;
+    		long lastID = 0L;
+    		long firstID = 0L;
     		
     		//access the twitter API using your twitter4j.properties file
     		Twitter twitter = TwitterFactory.getSingleton();
@@ -44,15 +44,17 @@ public class MyBot{
 				SendTweet.Tweet(louWeather.getWeather());
 			}
     			//creating a new search
-        		Query query = new Query("Kentucky #UKvsUF -RT");
+        		Query query = new Query("#DNCChair -RT");
         		
         		setupSearchQuery(query, firstID, lastID);
     			
         		//Get the results from the search
     			QueryResult result;
     			
+    			//Collecting tweets to put into arraylist
     			List<Status> tweets;
     			
+    			//Collecting IDs to find lowest and highest status IDs
     			ArrayList<Long> IDs = new ArrayList<Long>();
     			    			    			
     			do
@@ -65,30 +67,39 @@ public class MyBot{
     				//For each twitter status that matches our query we log it in the log file
     				for (Status status : tweets)
     				{
-    					WritingToFile.CSVFile("InfoLog.csv", status.getText(), status.getUser().getScreenName(), Long.toString(status.getId() + 'L'));
-    					    					    					
+    					//Write to csv file
+    					WritingToFile.CSVFile("InfoLog.csv", status.getText(), status.getUser().getScreenName(), Long.toString(status.getId() + 'L'), tweetCleanup(status.getText()));
+    					 
+    					//Add to ID arraylist
     					IDs.add(status.getId() + 'L');
     				}
     				
+    				//Checking to see if there are more pages
     				query = result.nextQuery();
+    				
+    				//Checking rate limit and will go to sleep if rate limit is reached
     				checkRateLimit(result);
     			}
     			while (result == null || result.hasNext()); //we do this till the query is empty
     		
+    			//Sample Code for updating Database
     			//URL myURL = new URL("https://data.louisvilleky.gov/sites/default/files/Crime_Data_2017_1.csv");
     			//MySQLConnection.UpdateCrimeData("CrimeData", myURL);
+    			
+    			MyPDFReport.CrimeDataZip("TEST", "TEST");
     			
     			//if no new tweets are found, no need to collect new IDs
     			if (IDs.size() > 0)
     			{
+    				//Sorts from smallest to biggest
     				Collections.sort(IDs);
     			
     				lastID = IDs.get(0) + 'L';
     				firstID = IDs.get((IDs.size() - 1)) + 'L';
     			}
     			
-    			System.out.println(Long.toString(firstID));
-    			System.out.println(Long.toString(lastID)); 
+    			System.out.println(Long.toString(firstID));// Help with Debug
+    			System.out.println(Long.toString(lastID)); // Help with Debug
     			System.out.println(Long.toString(lastID-1));// Help with Debug
     			System.out.println("Done"); //Help with Debug
     			
@@ -114,6 +125,7 @@ public class MyBot{
     
    private static void checkRateLimit(QueryResult result)
    {
+	   //If we go over our rate limit
 	   if (result.getRateLimitStatus().getRemaining() <= 0)
 	   {
 		   try
@@ -132,6 +144,7 @@ public class MyBot{
    
    private static void setupSearchQuery(Query query, long firstID, long lastID)
    {
+	   
 	   	//Only looking for recent tweets not popular ones
 		query.setResultType(Query.RECENT);
 		
@@ -141,7 +154,25 @@ public class MyBot{
 		//Making sure we don't get the same tweets over and over again.
 		if (firstID != 0)
 			query.setSinceId(firstID + 'L');
-				
+						
+   }
+   
+   private static String tweetCleanup (String status)
+   {
+	   //Remove Hashtags from Tweets
+	   status = status.replaceAll("#[^\\s]*", "");
+	   
+	   //Remove URLs in Tweet
+	   status = status.replaceAll("http[^\\s]*", "");
+	   
+	   //Remove @UserNames from Tweet Text
+	   status = status.replaceAll("@[^\\s]*", "");
+	   
+	   //Remove commas and spaces that could interfere with the search
+	   status = status.replace(",", "");
+	   status = status.replace("\n", "").replace("\r", "");
+	   
+	   return status;
    }
    
    

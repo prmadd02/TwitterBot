@@ -8,6 +8,7 @@ public class MySQLConnection {
 	
 	private static Connection getCon()
 	{
+		//Getting connection to MySQL Database
 		Connection connection = null;
 		try
 		{
@@ -28,6 +29,7 @@ public class MySQLConnection {
 	{
 		try
 		{
+			//loading csv file to database
 			CSVLoader loader = new CSVLoader(getCon());
 			
 			loader.loadCSV(csvFile, tableName, truncate);
@@ -40,6 +42,7 @@ public class MySQLConnection {
 	
 	public static void UpdateCrimeData (String tableName, URL URL)
 	{
+		//how to update databases
 		File updateCSV = new File("update.csv");
 		try
 		{
@@ -61,5 +64,10 @@ public class MySQLConnection {
 		{
 			WritingToFile.LogError(ex.toString(), WritingToFile.exceptionStacktraceToString(ex));
 		}
+	}
+	
+	public static Connection getConnection()
+	{
+		return getCon();
 	}
 }
