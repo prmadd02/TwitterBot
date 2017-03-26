@@ -1,3 +1,4 @@
+package Utility;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -68,7 +69,7 @@ public class WritingToFile {
 	    return baos.toString();
 	}
 	
-	public static void CSVFile (String fileName, String msg, String userName, String sor, String cleanup)
+	public static void CSVFile (String fileName, String msg, String userName, String statusID, String cleanup, String sentOrReceived)
 	{
 		//Get timestamp to put into file
 		String timeStamp = new SimpleDateFormat("M/dd/yyyy hh:mm:ss a").format(new java.util.Date());
@@ -84,13 +85,15 @@ public class WritingToFile {
 			
 			sb.append(timeStamp);
 			sb.append(',');
-			sb.append(sor);
+			sb.append(statusID);
 			sb.append(',');
 			sb.append(userName);
 			sb.append(',');
 			sb.append(msg);
 			sb.append(',');
 			sb.append(cleanup);
+			sb.append(',');
+			sb.append(sentOrReceived);
 			sb.append('\n');
 						
 			pw.write(sb.toString());

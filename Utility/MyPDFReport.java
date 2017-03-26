@@ -1,5 +1,10 @@
+package Utility;
+import java.io.File;
 import java.io.FileOutputStream;
-import java.sql.*; 
+import java.sql.*;
+
+import org.apache.commons.lang3.RandomStringUtils;
+
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
 
@@ -8,8 +13,9 @@ import com.itextpdf.text.pdf.*;
 public class MyPDFReport{
 	
 		
-        public static void CrimeDataZip(String userName, String Status) throws Exception
+        public static String CrimeDataZip(String userName, String Status) throws Exception
         {	
+        	        	
         	// Establishing Connection through MySQLConnection class
             Connection PDFConnection = MySQLConnection.getConnection();
         
@@ -17,11 +23,24 @@ public class MyPDFReport{
             Statement stmt = PDFConnection.createStatement();
                                     
             /* Define the SQL query */
-            ResultSet query_set = stmt.executeQuery("SELECT DATE_OCCURED, CRIME_TYPE, BLOCK_ADDRESS, ZIP_CODE FROM crimedata WHERE ZIP_CODE = '40222' ORDER BY DATE_OCCURED DESC");
+            ResultSet query_set = stmt.executeQuery("SELECT DATE_OCCURED, CRIME_TYPE, BLOCK_ADDRESS, ZIP_CODE FROM crimedata WHERE ZIP_CODE = '" + Status + "' ORDER BY DATE_OCCURED DESC");
+            
+            //If nothing is found close database connections and exit method
+            if (!query_set.next())
+            {
+            	query_set.close();
+                stmt.close(); 
+                PDFConnection.close();
+                String noData = "No Data";
+                System.out.println(noData);
+                return noData;
+            }
+            	
                                 
             /* Initialize PDF documents - logical objects */
+            String fileName = RandomStringUtils.randomAlphanumeric(5) + ".pdf";
             Document my_pdf_report = new Document(PageSize.LETTER.rotate());
-            PdfWriter.getInstance(my_pdf_report, new FileOutputStream("TwitterBot Record.pdf"));
+            PdfWriter.getInstance(my_pdf_report, new FileOutputStream(fileName));
             my_pdf_report.open();    
         
             //We have fifteen columns in our table
@@ -95,8 +114,12 @@ public class MyPDFReport{
             /* Close all DB related objects */
             query_set.close();
             stmt.close(); 
-            PDFConnection.close();               
+            PDFConnection.close();
             System.out.println("PDF Created");
+            
+            //Returning fileName
+            System.out.println(fileName);
+            return fileName;
         
         }
         
