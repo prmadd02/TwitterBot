@@ -1,6 +1,3 @@
-import java.util.Calendar;
-import java.util.Timer;
-
 import Hashtags.LouCrimeZip;
 import TableUpdate.CrimeData;
 
@@ -9,8 +6,7 @@ public class MyBot{
     //if something goes wrong, we might see a TwitterException
     public static void main(String... args) throws InterruptedException
     {
-    	Timer updateCrimeTime = new Timer();
-    	Calendar updateCrimeTable = Calendar.getInstance();
+
     	
     	//Schedule to update Crime table every Sunday
     	updateCrimeTable.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
