@@ -22,12 +22,12 @@ public class CrimeData extends TimerTask {
 									
 			public void run()
 			{
-		
+				System.out.println("LouCrimeUpdate Start");
 				try
 				{
 					//Louisville Data Portal Location
 					//URL changes with each update
-					URL myURL = new URL("https://data.louisvilleky.gov/sites/default/files/Crime_Data_2017_7.csv");
+					URL myURL = new URL("https://data.louisvilleky.gov/sites/default/files/Crime_Data_2017_9.csv");
 					
 					//Copy file from Louisville Data Portal
 					FileUtils.copyURLToFile(myURL, updateCSV);
