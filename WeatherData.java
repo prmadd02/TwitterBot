@@ -1,9 +1,13 @@
+package Utility;
+
 import org.json.*;
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.TimerTask;
 
-public class WeatherData {
+public class WeatherData extends TimerTask {
+	
 	private static String readAll(Reader rd) throws IOException{
 		StringBuilder sb = new StringBuilder();
 		int cp;
@@ -26,18 +30,30 @@ public class WeatherData {
 		}
 	}
 	
-	public String getWeather() throws IOException, JSONException{
-		JSONObject data = new JSONObject();
-		JSONArray weather = new JSONArray();
-		JSONObject description = new JSONObject();
+	public void run()
+	{
+		System.out.println("WeatherData Start");
+		try
+		{
+			JSONObject data = new JSONObject();
+			JSONArray weather = new JSONArray();
+			JSONObject description = new JSONObject();
 		
-		data = readJsonFromUrl("http://api.openweathermap.org/data/2.5/weather?q=Louisville&APPID=f1261d1617b2b63c278b6a3f584c67b8&units=metric");
-		weather = data.getJSONArray("weather");
-		double d = data.getJSONObject("main").getDouble("temp");
-		description = weather.getJSONObject(0);
+			data = readJsonFromUrl("http://api.openweathermap.org/data/2.5/weather?q=Louisville&APPID=f1261d1617b2b63c278b6a3f584c67b8&units=metric");
+			weather = data.getJSONArray("weather");
+			double d = data.getJSONObject("main").getDouble("temp");
+			description = weather.getJSONObject(0);
 		
-		String result = "The weather in Louisville is currently " + Math.round(d * 9/5 + 32) + " degrees Fahrenheit"
-				+ " with " + description.get("description");
-		return result;
+			String result = "The weather in Louisville is currently " + Math.round(d * 9/5 + 32) + " degrees Fahrenheit"
+					+ " with " + description.get("description");
+			
+			SendTweet.Tweet(result);
+			
+			System.out.println("WeatherData Done");
+		}
+		catch (Exception ex)
+		{
+			WritingToFile.LogError(ex.toString(), WritingToFile.exceptionStacktraceToString(ex));
+		}
 	}
 }
