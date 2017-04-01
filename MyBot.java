@@ -19,7 +19,7 @@ public class MyBot{
     	updateCrimeTable.set(Calendar.MINUTE, 0);
     	updateCrimeTable.set(Calendar.SECOND, 0);
     	updateCrimeTable.set(Calendar.MILLISECOND, 0);
-    	    	    	
+   	    	
     	updateCrimeTime.schedule(new CrimeData(), updateCrimeTable.getTime(), 1000 * 60 * 60 * 24 * 7);
     	
     	Timer weatherRelease = new Timer();
@@ -38,13 +38,6 @@ public class MyBot{
     	Timer queryCrimeTime = new Timer();
     	    	
     	//Schedule to run every minute
-    	queryCrimeTime.schedule(new LouCrimeZip(), 0, 1000 * 60);
-    	
-    	
-    		
+    	queryCrimeTime.schedule(new LouCrimeZip(), 0, 1000 * 60);		
     }
-    	
-       
-   
-   
 }
