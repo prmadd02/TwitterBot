@@ -2,8 +2,8 @@ import java.util.Calendar;
 import java.util.Timer;
 
 import Hashtags.LouCrimeZip;
+import Hashtags.LouWeather;
 import TableUpdate.CrimeData;
-import Utility.WeatherData;
 
 public class MyBot{
 
@@ -22,18 +22,10 @@ public class MyBot{
    	    	
     	updateCrimeTime.schedule(new CrimeData(), updateCrimeTable.getTime(), 1000 * 60 * 60 * 24 * 7);
     	
-    	Timer weatherRelease = new Timer();
-    	Calendar weatherSchedule = Calendar.getInstance();
+    	Timer queryWeatherTime = new Timer();
     	
     	//Schedule to release weather everyday @ 8am
-    	weatherSchedule.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-    	weatherSchedule.set(Calendar.HOUR_OF_DAY, 8);
-    	weatherSchedule.set(Calendar.MINUTE, 0);
-    	weatherSchedule.set(Calendar.SECOND, 0);
-    	weatherSchedule.set(Calendar.MILLISECOND, 0);
-    	
-    	weatherRelease.schedule(new WeatherData(), weatherSchedule.getTime(), 1000 * 60 * 60 * 24);
-    	
+    	queryWeatherTime.schedule(new LouWeather(), 0, 1000 * 60);		
     	
     	Timer queryCrimeTime = new Timer();
     	    	

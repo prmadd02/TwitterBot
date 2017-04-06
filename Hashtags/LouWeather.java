@@ -1,7 +1,5 @@
 package Hashtags;
 import Utility.WritingToFile;
-import Utility.MyPDFReport;
-import Utility.DropBox;
 import Utility.MySQLConnection;
 import Utility.SendTweet;
 import Utility.WeatherData;
@@ -19,11 +17,11 @@ import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 
 public class LouWeather extends TimerTask {
-	
-	
-			
+
 	public void run()
 	{
+		System.out.println("LouWeather Query Start");
+		
 		//access the twitter API using your twitter4j.properties file
 		Twitter twitter = TwitterFactory.getSingleton();
 		
@@ -60,31 +58,11 @@ public class LouWeather extends TimerTask {
 			{
 				//Write to csv file
 				WritingToFile.CSVFile("InfoLog.csv", status.getText(), status.getUser().getScreenName(), Long.toString(status.getId() + 'L'), tweetCleanup(status.getText()), "RECEIVED");
-			
-				//Creating PDF Report
-				//String pdf = MyPDFReport.CrimeDataZip(status.getUser().getScreenName(), tweetCleanup(status.getText()));
-			
-				//Uploading to Dropbox and collecting link 
-				//String link = DropBox.getLink(pdf);
 				
-				WeatherData wd = new WeatherData();
-				
-				wd.run();
-			
-				//wd.run();
-				
-				/*if (link == "No Data")
-				{
-					SendTweet.Tweet(status.getUser().getScreenName(), "Sorry, your search didn't return any results.");
-				}
-				else
-				{
-					//Replying to the tweet
-					SendTweet.PDFTweet(status.getUser().getScreenName(), tweetCleanup(status.getText()), link, status.getId() + 'L');
-				}
+				SendTweet.Tweet(status.getUser().getScreenName(), WeatherData.requestedWeather());		
 			 
 				//Add to ID arraylist
-				IDs.add(status.getId() + 'L');*/
+				IDs.add(status.getId() + 'L');
 			}
 		
 			//Checking to see if there are more pages
