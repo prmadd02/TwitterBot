@@ -8,6 +8,8 @@ import java.util.TimerTask;
 
 public class WeatherData extends TimerTask {
 	
+	public static String result;
+	
 	private static String readAll(Reader rd) throws IOException{
 		StringBuilder sb = new StringBuilder();
 		int cp;
@@ -30,6 +32,33 @@ public class WeatherData extends TimerTask {
 		}
 	}
 	
+	public static String requestedWeather(){
+		
+		 try
+	        {
+	            JSONObject data = new JSONObject();
+	            JSONArray weather = new JSONArray();
+	            JSONObject description = new JSONObject();
+
+	            data = readJsonFromUrl("http://api.openweathermap.org/data/2.5/weather?q=Louisville&APPID=f1261d1617b2b63c278b6a3f584c67b8&units=metric");
+	            weather = data.getJSONArray("weather");
+	            double d = data.getJSONObject("main").getDouble("temp");
+	            description = weather.getJSONObject(0);
+
+	            String result = "The weather in Louisville is currently " + Math.round(d * 9/5 + 32) + " degrees Fahrenheit"
+	                    + " with " + description.get("description");
+
+	            return result;
+
+	        }
+	        catch (Exception ex)
+	        {
+	            WritingToFile.LogError(ex.toString(), WritingToFile.exceptionStacktraceToString(ex));
+
+	            return "LouWeather Data is not working right now. Please try again later.";
+	        }	
+	}
+	
 	public void run()
 	{
 		System.out.println("WeatherData Start");
@@ -44,7 +73,7 @@ public class WeatherData extends TimerTask {
 			double d = data.getJSONObject("main").getDouble("temp");
 			description = weather.getJSONObject(0);
 		
-			String result = "The weather in Louisville is currently " + Math.round(d * 9/5 + 32) + " degrees Fahrenheit"
+			result = "The weather in Louisville is currently " + Math.round(d * 9/5 + 32) + " degrees Fahrenheit"
 					+ " with " + description.get("description");
 			
 			SendTweet.Tweet(result);
