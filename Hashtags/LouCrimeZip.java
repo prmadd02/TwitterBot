@@ -8,6 +8,7 @@ import Utility.SendTweet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.TimerTask;
 
 import twitter4j.Query;
@@ -19,7 +20,8 @@ import twitter4j.TwitterFactory;
 
 public class LouCrimeZip extends TimerTask {
 	
-	
+	int select = -1;
+	int previous = -1;
 			
 	public void run()
 	{
@@ -68,7 +70,35 @@ public class LouCrimeZip extends TimerTask {
 			
 				if (link == "No Data")
 				{
-					SendTweet.Tweet(status.getUser().getScreenName(), "Sorry, your search didn't return any results.");
+					// Random string generator to avoid duplicate API status errors					
+					String [] arr = {"Sorry, your search didn't return any results.", 
+									 "Sorry, we couldn't find that zip code in the Open Data Portal.",
+									 "Sorry, our bot couldn't find what you were looking for.", 
+									 "@" + status.getUser().getScreenName() + " please press Alt+F4 to continue.",
+									 "Sorry, @" + status.getUser().getScreenName() + " we couldn't find the information you were looking for.",
+									 "The data that was requested from @" + status.getUser().getScreenName() + " is unavailable at this time."};
+					
+					Random random = new Random();
+					
+					//keep selecting an array as long as select and previous match up
+					do {
+						
+						select = random.nextInt(arr.length);
+						System.out.println("Select = " + select);
+						System.out.println("Previous = " + previous);
+					}
+					while (select == previous);
+					
+					if (select == 3 || select == 4 || select == 5)
+					{
+						SendTweet.Tweet(arr[select]);
+					}
+					else
+					{
+						SendTweet.Tweet(status.getUser().getScreenName(), arr[select]);
+					}
+										
+					previous = select;
 				}
 				else
 				{
@@ -98,7 +128,7 @@ public class LouCrimeZip extends TimerTask {
 			lastID = IDs.get(0) + 'L';
 			firstID = IDs.get((IDs.size() - 1)) + 'L';
 		
-			MySQLConnection.StoreStatusIDs(firstID, lastID);
+			MySQLConnection.StoreStatusIDs("Zip", firstID, lastID);
 		}
 	
 		System.out.println(Long.toString(firstID));// Help with Debug
@@ -152,7 +182,7 @@ private static void setupSearchQuery(Query query, long firstID, long lastID)
 	//Ten tweets per page (Doubt its necessary but nevertheless)
 	query.setCount(10);
 	
-	firstID = MySQLConnection.CollectFirstID();
+	firstID = MySQLConnection.CollectFirstID("Zip");
 			
 	//Making sure we don't get the same tweets over and over again.
 	if (firstID != 0L)
