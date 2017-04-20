@@ -46,114 +46,223 @@ public class MySQLConnection {
 				
 	}
 	
-	public static void StoreStatusIDs (long FirstID, long LastID)
+	public static void StoreStatusIDs (String ZipOrWea,long FirstID, long LastID)
 	{
 		Connection con = null;
 		Statement stmt = null;
 		
-		try
+		if (ZipOrWea == "Weather")
 		{
-			con = getCon();
+			try
+			{
+				con = getCon();
 		
-			stmt = con.createStatement();
+				stmt = con.createStatement();
 
-			stmt.executeUpdate("UPDATE STATUSID " +
-							   "SET FirstID = " + FirstID + ", " +
-							   "LastID = " + LastID + ";");
-		} 
-		catch (Exception ex)
+				stmt.executeUpdate("UPDATE STATUSID " +
+							   	   "SET WeaFirstID = " + FirstID + ", " +
+							       "WeaLastID = " + LastID + ";");
+			} 
+			catch (Exception ex)
+			{
+				WritingToFile.LogError(ex.toString(), WritingToFile.exceptionStacktraceToString(ex));
+			}
+		
+			//Close all Connections
+			finally
+			{
+				if (stmt != null) 
+				{
+					try 
+					{
+						stmt.close();
+					} 
+					catch (SQLException e) 
+					{ /* ignored */}
+				}
+			
+				if (con != null)
+				{
+					try 
+					{
+						con.close();
+					}
+					catch (SQLException e)
+					{ /* ignored */}
+				}
+			}
+		}
+		if (ZipOrWea == "Zip")
 		{
-			WritingToFile.LogError(ex.toString(), WritingToFile.exceptionStacktraceToString(ex));
+				try
+				{
+					con = getCon();
+			
+					stmt = con.createStatement();
+
+					stmt.executeUpdate("UPDATE STATUSID " +
+								   	   "SET ZipFirstID = " + FirstID + ", " +
+								       "ZipLastID = " + LastID + ";");
+				} 
+				catch (Exception ex)
+				{
+					WritingToFile.LogError(ex.toString(), WritingToFile.exceptionStacktraceToString(ex));
+				}
+			
+				//Close all Connections
+				finally
+				{
+					if (stmt != null) 
+					{
+						try 
+						{
+							stmt.close();
+						} 
+						catch (SQLException e) 
+						{ /* ignored */}
+					}
+				
+					if (con != null)
+					{
+						try 
+						{
+							con.close();
+						}
+						catch (SQLException e)
+						{ /* ignored */}
+					}
+				}
 		}
 		
-		//Close all Connections
-		finally
-		{
-			if (stmt != null) 
-			{
-		        try 
-		        {
-		            stmt.close();
-		        } 
-		        catch (SQLException e) 
-		        { /* ignored */}
-			}
-			
-			if (con != null)
-			{
-		        try 
-		        {
-		            con.close();
-		        }
-		        catch (SQLException e)
-		        { /* ignored */}
-		    }
-		}
 	}
 	
-	public static long CollectFirstID()
+	public static long CollectFirstID(String ZipOrWea)
 	{
 		long id = 0L;
 		Connection con = null;
 		Statement stmt = null;
 		ResultSet rs = null;
-		
-		try
+		if (ZipOrWea == "Weather")
 		{
-			con = getCon();
+			try
+			{
+				con = getCon();
 		
-			stmt = con.createStatement();
+				stmt = con.createStatement();
 
-			rs = stmt.executeQuery("SELECT FirstID FROM STATUSID;");
+				rs = stmt.executeQuery("SELECT WeaFirstID FROM STATUSID;");
 			
-			if(rs.next()) 
-			{ 
-				id = rs.getLong("FirstID") + 'L';
-			}
+				if(rs.next()) 
+				{ 
+					id = rs.getLong("WeaFirstID") + 'L';
+				}
 			
-			return id;
-		} 
+				return id;
+			} 
 		
-		catch (Exception ex)
-		{
-			WritingToFile.LogError(ex.toString(), WritingToFile.exceptionStacktraceToString(ex));
+			catch (Exception ex)
+			{
+				WritingToFile.LogError(ex.toString(), WritingToFile.exceptionStacktraceToString(ex));
 			
-			return id;
+				return id;
+			}
+		
+			//Close all Connections
+			finally
+			{
+				if (rs != null) 
+				{
+					try 
+					{
+						rs.close();
+					} 
+					catch (SQLException e) 
+					{ /* ignored */}
+				}
+			
+				if (stmt != null) 
+				{
+					try 
+					{
+						stmt.close();
+					} 
+					catch (SQLException e) 
+					{ /* ignored */}
+				}
+			
+				if (con != null)
+				{
+					try 
+					{
+						con.close();
+					}
+					catch (SQLException e)
+					{ /* ignored */}
+				}
+			}
 		}
 		
-		//Close all Connections
-		finally
+		else
 		{
-			if (rs != null) 
+			try
 			{
-		        try 
-		        {
-		            rs.close();
-		        } 
-		        catch (SQLException e) 
-		        { /* ignored */}
-		    }
+				con = getCon();
+		
+				stmt = con.createStatement();
+
+				rs = stmt.executeQuery("SELECT ZipFirstID FROM STATUSID;");
 			
-			if (stmt != null) 
+				if(rs.next()) 
+				{ 
+					id = rs.getLong("ZipFirstID") + 'L';
+				}
+			
+				return id;
+			} 
+		
+			catch (Exception ex)
 			{
-		        try 
-		        {
-		            stmt.close();
-		        } 
-		        catch (SQLException e) 
-		        { /* ignored */}
+				WritingToFile.LogError(ex.toString(), WritingToFile.exceptionStacktraceToString(ex));
+			
+				return id;
 			}
-			
-			if (con != null)
+		
+			//Close all Connections
+			finally
 			{
-		        try 
-		        {
-		            con.close();
-		        }
-		        catch (SQLException e)
-		        { /* ignored */}
-		    }
+				if (rs != null) 
+				{
+					try 
+					{
+						rs.close();
+					} 
+					catch (SQLException e) 
+					{ /* ignored */}
+				}
+			
+				if (stmt != null) 
+				{
+					try 
+					{
+						stmt.close();
+					} 
+					catch (SQLException e) 
+					{ /* ignored */}
+				}
+			
+				if (con != null)
+				{
+					try 
+					{
+						con.close();
+					}
+					catch (SQLException e)
+					{ /* ignored */}
+				}
+			}
 		}
+		
+		
 	}
 	
 	public static Connection getConnection()
