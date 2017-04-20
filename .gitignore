@@ -1,0 +1,14 @@
+/CSVLoader.class
+/DateUtil$1.class
+/DateUtil.class
+/MyBot.class
+/MySQLConnection.class
+/SendTweet.class
+/WritingToFile.class
+*.log
+*.log*
+*.jar
+twitter4j.properties
+*.app
+update.csv
+*.csv

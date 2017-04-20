@@ -84,6 +84,7 @@ public class LouWeather extends TimerTask {
 			firstID = IDs.get((IDs.size() - 1)) + 'L';
 		
 			MySQLConnection.StoreStatusIDs("Weather", firstID, lastID);
+
 		}
 	
 		System.out.println(Long.toString(firstID));// Help with Debug
@@ -138,6 +139,7 @@ private static void setupSearchQuery(Query query, long firstID, long lastID)
 	query.setCount(10);
 	
 	firstID = MySQLConnection.CollectFirstID("Weather");
+
 			
 	//Making sure we don't get the same tweets over and over again.
 	if (firstID != 0L)
